@@ -29,6 +29,7 @@ PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
 PRODUCT_PACKAGES := \
+	hwcomposer.tuna \
 	lights.tuna \
 	charger \
 	charger_res_images
@@ -42,6 +43,10 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
 	power.tuna
+
+#symlinks
+PRODUCT_PACKAGES += \
+    libion.so
 
 # Support for Browser's saved page feature. This allows
 # for pages saved on previous versions of the OS to be
@@ -200,11 +205,17 @@ PRODUCT_PACKAGES += \
 PRODUCT_PROPERTY_OVERRIDES += \
         ro.zygote.disable_gl_preload=true
 
+# TI OMAP4
+PRODUCT_PACKAGES += \
+    libion_ti \
+    smc_pa_ctrl \
+    tf_daemon \
+    libtf_crypto_sst 
+
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
 
 $(call inherit-product-if-exists, vendor/nxp/pn544/nxp-pn544-fw-vendor.mk)
 $(call inherit-product, hardware/ti/omap4xxx/omap4.mk)
-$(call inherit-product-if-exists, vendor/ti/proprietary/omap4/ti-omap4-vendor.mk)
 $(call inherit-product-if-exists, vendor/samsung/tuna/device-vendor.mk)
 
 BOARD_WLAN_DEVICE_REV := bcm4330_b2
