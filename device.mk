@@ -21,6 +21,8 @@
 
 DEVICE_FOLDER := device/samsung/tuna
 
+$(call inherit-product-if-exists, hardware/ti/omap4/omap4.mk)
+
 DEVICE_PACKAGE_OVERLAYS := $(DEVICE_FOLDER)/overlay
 
 # This device is xhdpi.  However the platform doesn't
@@ -31,7 +33,9 @@ PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
 # HALs
-PRODUCT_PACKAGES := \
+PRODUCT_PACKAGES += \
+	hwcomposer.tuna \
+	camera.omap4 \
 	lights.tuna \
 	nfc.tuna \
 	power.tuna \
@@ -52,6 +56,10 @@ PRODUCT_PACKAGES += \
 	audio.a2dp.default \
 	audio.usb.default \
 	audio.r_submix.default
+
+# Symlinks
+PRODUCT_PACKAGES += \
+	libion.so
 
 PRODUCT_COPY_FILES += \
 	$(DEVICE_FOLDER)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf \
@@ -185,11 +193,16 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.opengles.version=131072 \
 	ro.sf.lcd_density=320 \
-	ro.hwui.disable_scissor_opt=true
+	ro.hwui.disable_scissor_opt=true \
+	debug.hwui.render_dirty_regions=false
 
 # GPU producer to CPU consumer not supported
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.bq.gpu_to_cpu_unsupported=1
+
+# Disable VFR support for encoders
+PRODUCT_PROPERTY_OVERRIDES += \
+	debug.vfr.enable=0
 
 PRODUCT_CHARACTERISTICS := nosdcard
 
@@ -204,6 +217,10 @@ PRODUCT_PACKAGES += \
 	e2fsck \
 	setup_fs
 
+# DCC
+PRODUCT_PACKAGES += \
+    dumpdcc
+
 # Enable KSM by default
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.ksm.default=1
@@ -214,9 +231,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
 
-$(call inherit-product-if-exists, vendor/nxp/pn544/nxp-pn544-fw-vendor.mk)
-$(call inherit-product, hardware/ti/omap4xxx/omap4.mk)
-$(call inherit-product-if-exists, vendor/ti/proprietary/omap4/ti-omap4-vendor.mk)
 $(call inherit-product-if-exists, vendor/samsung/tuna/device-vendor.mk)
 
 $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4330/device-bcm.mk)
